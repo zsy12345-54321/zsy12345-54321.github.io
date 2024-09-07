@@ -7,6 +7,55 @@
 <body>
     <header><h1>Project 1</h1>
         <h2>Images of the Russian Empire -- Colorizing the Prokudin-Gorskii Photo Collection</h2>
+        <h3> Siyuan Zhai</h3>
     </header>
+<div class="content-container">
+    <h2> Project Overview</h2>
+    <p>Project 1 is a project that colorizes the Prokudin-Gorskii Photo Collection. 
+        The Prokudin-Gorskii Photo Collection is a collection of photos taken by Russian photographer Sergei Mikhailovich Prokudin-Gorskii in the early 20th century. 
+        We take the digitized Prokudin-Gorskii glass plate images to automatically produce a color image with as few visual artifacts as possible. 
+        To do this, we extract the three color channel images, place them on top of each other, and align them so that they form a single RGB color image. </p>
+    </a>
+    <h2> Approach</h2>
+    <h3> L2 and NCC </h3>
+    <ul>
+        <li>L2: Compute the sum of squared differences between the two images, find the offset that minimizes the sum of squared differences</li>
+        <li>NCC: Compute the normalized cross-correlation between the two images, find the offset that maximizes the normalized cross-correlation</li>
+        <li>Both methods are used to align the three color channel images, and the L2 method is faster</li>
+    </ul>
+
+    <h3> Image Pyramid </h3>
+    <ul>
+        <li>Exhaustive search will become expensive if the pixel displacement is too large, In this case, we need implement a faster search procedure such as an image pyramid. </li>
+        <li>For the image pyramid, I downsample the image to 1/16 and then search for the best offset use L2 method, 
+            then upsample the image to 1/4 and search for the best offset again, repeat this process until reach the original size of the image. </li>
+        </ul>
+
+    <h3> Improvement</h3>
+    <ul>
+        <li>It still has some visual artifacts, so we need to improve the quality of the image by using other method to align the three color channel images. </li>
+        <li>Crop 2% of the image to remove the black border/noise, and then use L2 or Image Pyramid method.</li>
+        <li>To reduce noise, I used the <b> <a href="https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html?ref=blog.roboflow.com">Canny edge detector</a></b>, which use a gaussian filter to smooth the image, 
+            and then use the Sobel filter to find the gradient of the image to find the edge of the image. </li>
+        </ul>
+    
+    <h2> Workflow </h2>
+
+    <ol>
+        <li>Read the image and split the image into three channel images, r, g, b.</li>
+        <li>Remove the black border/noise by cropping 2% of each images</li>
+        <li>Reduce noise by using the Canny edge detector</li>
+        <li>Find the best offset using L2 or Image Pyramid method base on the size of the image</li>
+        <li>Align the three color channel images use np.roll</li>
+        <li>Combine the three color channel images to form a single RGB color image</li>
+        <li>Save the color image</li>
+    </ol>
+     
+
+    <h2> Results</h2>
+
+    <li></li>
+
 </body>
+
 </html>
