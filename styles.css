@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f8f8;
+    background-color: #aac5df;
 }
 
 /* Navigation Bar */
@@ -29,7 +29,8 @@ nav a:hover {
 
 /* Header */
 header {
-    background: linear-gradient(to bottom, #8edfc7, #ffffff); 
+    background-color: #f9f9f9;
+    box-shadow: inset 0px 0px 5px 0px #aaa;
     text-align: center;
     padding: 50px 20px;
     color: #333;
@@ -38,13 +39,13 @@ header {
 header h1 {
     font-size: 36px;
     font-weight: bold;
-    margin: 0;
-}
+    margin: 5px 0;
+    color: #333;}
 
 header h2 {
     font-size: 20px;
     font-weight: lighter;
-    margin: 10px 0;
+    margin: 5px 0;
     font-style: italic;
     color: #555;
 }
@@ -54,13 +55,38 @@ header h3 {
     margin-top: 5px;
     color: #666;
 }
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
+
+.content-container {
+    width: 75%;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    display: center;
+    flex-direction: column;
+    align-items: center;
+    font-family:'Times New Roman', Times, serif;
+    font-size: medium;
+    opacity: 0.7;
+    border-radius: 5%;
+}
+
+
 /* Portfolio Section */
 .portfolio-item {
     width: 31%;
     margin: 1%;
     float: left;
-    background-color: white;
-    border: 1px solid #ddd;
+    background-color: rgb(201, 211, 233);
+    box-shadow: inset 0px 0px 5px 0px #aaa;
+    border-radius: 5px;
     padding: 10px;
     box-shadow: 0px 0px 5px 0px #aaa;
 }
@@ -68,6 +94,7 @@ header h3 {
 .portfolio-item img {
     width: 100%;
     height: auto;
+    border-radius: 5px;
 }
 
 .portfolio-item h2 {
