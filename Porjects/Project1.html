@@ -24,25 +24,32 @@
         <h3>Image Pyramid Method</h3>
         <ul>
             <li>When pixel displacement is large, exhaustive search can be computationally expensive. In such cases, we use the image pyramid method to speed up the process.</li>
-            <li>The image is initially downsampled to 1/16 of its original size, and L2 alignment is applied. The image is then upsampled to 1/4, with the process repeated until we return to the original size.</li>
+            <li>The image is initially downsampled to 1/16 of its original size, and L2 alignment is applied. The image is then upsampled to 1/8, with the process repeated until we return to the original size.</li>
         </ul>
 
         <h3>Improvements</h3>
         <ul>
-            <li>Some visual artifacts remain, so further improvements are needed to refine alignment.</li>
-            <li>We can crop 2% from the edges of the image to remove black borders or noise, then apply L2 or the image pyramid method.</li>
+            <li>Automatic white balance: Since each channel has a maximum value of 255 and a minimum value of 0, I normalized the values in each channel so that they contribute equally when the image is merged.
+                <ul>
+                    <li>For each channel, I calculated its mean value and then computed the overall mean across all three channels.</li>
+                    <li>Next, I normalized each channel by multiplying every pixel by the ratio of the overall mean to the mean of that channel.</li>
+                </ul>
+            </li>
+            <li>I croped 2% from the edges of the image to remove black borders or noise, then apply L2 or the image pyramid method.</li>
             <li>To reduce noise, I used the <b><a href="https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html?ref=blog.roboflow.com">Canny edge detector</a></b>. This uses a Gaussian filter to smooth the image and a Sobel filter to detect edges.</li>
         </ul>
 
         <h2>Workflow</h2>
         <ol>
-            <li>Load the image and split it into the red, green, and blue channels.</li>
-            <li>Crop 2% from the edges to remove black borders or noise.</li>
-            <li>Apply the Canny edge detector to reduce noise.</li>
-            <li>Find the optimal offset using the L2 or image pyramid method, depending on the image size.</li>
-            <li>Align the three color channels using <code>np.roll()</code>.</li>
-            <li>Combine the three channels to form the final RGB image.</li>
-            <li>Save the resulting color image.</li>
+            <li>Load the image and split it into red, green, and blue channels.</li>
+            <li>Crop 2% from the edges to eliminate black borders and noise.</li>
+            <li>Normalize each channel’s values to achieve automatic white balance.</li>
+            <li>Resize each channel to create 4 levels for the pyramid method.</li>
+            <li>Apply the Canny edge detector to reduce noise and highlight important features.</li>
+            <li>Determine the optimal offset using either the L2 method or image pyramid technique, depending on the image size.</li>
+            <li>Align the three color channels using <code>np.roll()</code> based on the calculated offsets.</li>
+            <li>Merge the aligned channels to create the final RGB image.</li>
+            <li>Save the resulting color image.</li>            
         </ol>
      
 
@@ -58,7 +65,6 @@
             <div class="content-title">cathedral_Canny</div>
             <div class="content-note">offset red(12,3), green(5,2)</div>
         </div>
-
         <div class = "gallery-item">
             <img src="../src/proj1_output/tobolsk_original.jpg " alt="tobolsk_original Image">
             <div class="content-title">tobolsk_original</div>
@@ -78,7 +84,9 @@
             <div class="content-title">tobolsk_Canny</div>
             <div class="content-note">offset red(3,2), green(-3,2)</div>
         </div>
-        
+    </div>
+    <h3>For Larger Images, use pyramid method and white balance</h3>
+    <div class = "gallery">
         <div class = "gallery-item">
             <img src="../src/proj1_output/church_original.jpg " alt="church_original Image">
             <div class="content-title">church_original</div>
@@ -87,6 +95,10 @@
             <img src="../src/proj1_output/church_pyramid_aligned.jpg" alt="church_pyramid_aligned Image">
             <div class="content-title">church_pyramid_aligned</div>
             <div class="content-note">offset red(58,-4), green(25,3)</div>
+        </div>
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/church_pyramid_aligned_normalized.jpg" alt="church_pyramid_aligned Image">
+            <div class="content-title">church_pyramid_aligned_normalized</div>
         </div>
 
         <div class = "gallery-item">
@@ -98,6 +110,11 @@
             <div class="content-title">emir_pyramid_aligned</div>
             <div class="content-note">offset red(107,40), green(49,24)</div>
         </div>
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/emir_pyramid_aligned_normalized.jpg " alt="emir_original Image">
+            <div class="content-title">emir_pyramid_aligned_normalized</div>
+        </div>
+
 
         <div class = "gallery-item">
             <img src="../src/proj1_output/harvesters_original.jpg " alt="harvesters_original Image">
@@ -108,7 +125,10 @@
             <div class="content-title">harvesters_pyramid_aligned</div>
             <div class="content-note">offset red(124,14), green(60,17)</div>
         </div>
-
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/harvesters_pyramid_aligned_normalized.jpg " alt="harvesters_original Image">
+            <div class="content-title">harvesters_pyramid_aligned_normalized</div>
+        </div>
 
         <div class = "gallery-item">
             <img src="../src/proj1_output/icon_original.jpg " alt="icon_original Image">
@@ -119,7 +139,11 @@
             <div class="content-title">icon_pyramid_aligned</div>
             <div class="content-note">offset red(89,23), green(39,16)</div>
         </div>
-        
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/icon_pyramid_aligned_normalized.jpg " alt="icon_original Image">
+            <div class="content-title">icon_pyramid_aligned_normalized</div>
+        </div>
+
         <div class = "gallery-item">
             <img src="../src/proj1_output/lady_original.jpg " alt="lady_original Image">
             <div class="content-title">lady_original</div>
@@ -129,6 +153,10 @@
             <div class="content-title">lady_pyramid_aligned</div>
             <div class="content-note">offset red(120,13), green(56,10)</div>
         </div>
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/lady_pyramid_aligned_normalized.jpg " alt="lady_original Image">
+            <div class="content-title">lady_pyramid_aligned_normalized</div>
+        </div>
 
         <div class = "gallery-item">
             <img src="../src/proj1_output/melons_original.jpg " alt="melons_original Image">
@@ -137,7 +165,11 @@
         <div class = "gallery-item">
             <img src="../src/proj1_output/melons_pyramid_aligned.jpg" alt="melons_pyramid_aligned Image">
             <div class="content-title">melons_pyramid_aligned</div>
-            <div class="content-note">offset red(121,-23), green(80,10)</div>
+            <div class="content-note">offset red(176,14), green(80,10)</div>
+        </div>
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/melons_pyramid_aligned_normalized.jpg " alt="melons_original Image">
+            <div class="content-title">melons_pyramid_aligned_normalized</div>
         </div>
         
         <div class = "gallery-item">
@@ -149,6 +181,10 @@
             <div class="content-title">onion_church_pyramid_aligned</div>
             <div class="content-note">offset red(107,35), green(54,24)</div>
         </div>
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/onion_church_pyramid_aligned_normalized.jpg " alt="onion_church_original Image">
+            <div class="content-title">onion_church_pyramid_aligned_normalized</div>
+        </div>
 
         <div class = "gallery-item">
             <img src="../src/proj1_output/sculpture_original.jpg " alt="sculpture_original Image">
@@ -157,7 +193,11 @@
         <div class = "gallery-item">
             <img src="../src/proj1_output/sculpture_pyramid_aligned.jpg" alt="sculpture_pyramid_aligned Image">
             <div class="content-title">sculpture_pyramid_aligned</div>
-            <div class="content-note">offset red(125,-24), green(33,-11)</div>
+            <div class="content-note">offset red(140,-27), green(33,-11)</div>
+        </div>
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/sculpture_pyramid_aligned_normalized.jpg " alt="sculpture_original Image">
+            <div class="content-title">sculpture_pyramid_aligned_normalized</div>
         </div>
 
         <div class = "gallery-item">
@@ -167,9 +207,13 @@
         <div class = "gallery-item">
             <img src="../src/proj1_output/self_portrait_pyramid_aligned.jpg" alt="self_portrait_pyramid_aligned Image">
             <div class="content-title">self_portrait_pyramid_aligned</div>
-            <div class="content-note">offset red(112,-2), green(77,29)</div>
+            <div class="content-note">offset red(175,37), green(77,29)</div>
         </div>
 
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/self_portrait_pyramid_aligned_normalized.jpg " alt="self_portrait_original Image">
+            <div class="content-title">self_portrait_pyramid_aligned_normalized</div>
+        </div>
 
         <div class = "gallery-item">
             <img src="../src/proj1_output/three_generations_original.jpg " alt="three_generations_original Image">
@@ -180,7 +224,10 @@
             <div class="content-title">three_generations_pyramid_aligned</div>
             <div class="content-note">offset red(111,8), green(56,12)</div>
         </div>
-
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/three_generations_pyramid_aligned_normalized.jpg " alt="three_generations_original Image">
+            <div class="content-title">three_generations_pyramid_aligned_normalized</div>
+        </div>
 
         <div class = "gallery-item">
             <img src="../src/proj1_output/train_original.jpg " alt="train_original Image">
@@ -190,6 +237,10 @@
             <img src="../src/proj1_output/train_pyramid_aligned.jpg" alt="train_pyramid_aligned Image">
             <div class="content-title">train_pyramid_aligned</div>
             <div class="content-note">offset red(85,29), green(41,0)</div>
+        </div>
+        <div class = "gallery-item">
+            <img src="../src/proj1_output/train_pyramid_aligned_normalized.jpg " alt="train_original Image">
+            <div class="content-title">train_pyramid_aligned_normalized</div>
         </div>
     </div> 
     </div>
