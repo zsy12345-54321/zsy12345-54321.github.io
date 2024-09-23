@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>180 Proj2</title>
+    <link rel="stylesheet" href="../styles.css"> 
+</head>
+<body>
+    <header><h1>Project 2</h1>
+        <h2>Fun with Filters and Frequencies!</h2>
+        <h3> Siyuan Zhai</h3>
+    </header>
+    <div class = 'content-container'>
+        <h2> Part 1: Fun with Filters</h2>
+        <h3> Part 1.1: Finite Difference Operator </h3>
+        <h4> Workflow</h4>
+        <ul>
+            <li>First, we definded two array D_x ([1,-1]) and D_y ([1,-1].T), which are the finite difference operators in x and y direction. </li>
+            <li> Convolve the image by convolve2d function with these two arrays, to caculate the partial derivative in x and y direction.</li>
+            <li> After that, we use the formula: sqrt(dx^2 + dy^2) to caculate the gradient magnitude of the image.
+                Gradient magnitude shows the change rate of the pixel value in x and y direction.</li>
+            <li> however, there is some noise in the image, so we need to choice an appropriate threshold, convert the result to binary image.</li>
+            <li> After trying, I found that the threshold 95.5% of the gradient magnitude is a good choice to get a clear binary image. 
+            </li>
+        </ul>
+        <h4> Results</h4>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P1_x.jpg" alt="P1_x Image">
+                <div class="content-title">Partial derivative X</div>   
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P1_y.jpg" alt="P1_y Image">
+                <div class="content-title">Partial derivative y</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P1_m.jpg" alt="P1_m Image">
+                <div class="content-title">P1_Magnitude</div>
+            </div>  
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P1_mb.jpg" alt="P1_binary Image">
+                <div class="content-title">P1_binary</div>
+            </div>   
+        </div>
+
+        <h3> Part 1.2:  Derivative of Gaussian (DoG) Filter</h3>
+        <h4> Reason</h4>
+        <p> From Part1.2, we see the difference operator  results has a lot noise, to reduce it we  have to find appropriate threshold and then binary it.   
+            Derivative of Gaussian filter is mush smoother  </p>
+        <h4> Workflow</h4>
+        <ul>
+            <li>
+                To get a Gaussian filter, we first create a 1D Gaussian filter use </code> cv2.getGaussianKernel</code> function. Then take the outer product of the 1D Gaussian filter to get a 2D Gaussian filter.
+            </li>
+            <li>
+                With the Gaussian filter, we can create a blurred version of the original image by convolving the image with the Gaussian filter.
+            </li>
+            <li>
+                After that, the same step as Part 1.1, we caculate the partial derivative in x and y direction, and then caculate the gradient magnitude of the image.
+            </li>
+        </ul>
+        <p> Here is some of the resulte and blurred image:</p>
+
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/cameraman.png" alt="Original Image">
+                <div class="content-title">Original Image</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_blur.jpg" alt="P2_blur Image">
+                <div class="content-title">Blurred Image</div>
+            </div>
+
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_x.jpg" alt="P2_x Image">
+                <div class="content-title">Partial derivative X</div>   
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_y.jpg" alt="P2_y Image">
+                <div class="content-title">Partial derivative y</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_m.jpg" alt="P2_m Image">
+                <div class="content-title">P2_Magnitude</div>
+            </div>  
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_mb.jpg" alt="P2_binary Image">
+                <div class="content-title">P2_binary</div>
+            </div>
+        </div>
+
+        <div class="answer">
+            Compare the image from Part 1.1 and Part 1.2, the noise is reduced in the DoG filter result. And edge is more clear and smooth in the DoG filter result.
+        </div>
+
+        <p> 
+            To make the code faster, we can do the same thing as Part 1.2, but instead of convolving the image with the Gaussian filter and then convolving the result with the difference operator, we can
+            first convolve the Gaussian filter with dx and dy, and then convolve the result with the image. This way, we only need to convolve the image once.<br>
+            Below is the image of the result of this method:
+        </p>
+
+        <div class = 'gallery'>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_2_x.jpg" alt="P2_2_x Image">
+                <div class="content-title">P2_2_Partial derivative X</div>  
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_2_y.jpg" alt="P2_2_y Image">
+                <div class="content-title">P2_2_Partial derivative y</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_2_gradient_magnitude.jpg" alt="P2_2_m Image">
+                <div class="content-title">P2_2_Magnitude</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_2_mb.jpg" alt="P2_2_binary Image">
+                <div class="content-title">P2_2_binary</div>
+            </div>
+        </div>
+        <div class = 'answer'>
+            The result of this method is the same as the result of the previous method becasue of the matrix commutative and associative , as showen in the above images. 
+        </div>
+    </div>
+    
+    <div class = 'content-container'>
+        <h2> Part 2: Fun with Frequencies</h2>
+        <h3> Part 2.1: Image "Sharpening"</h3>
+        <h4> Workflow</h4>
+        <ul>
+            <li> 
+                We use the Gaussian filter(Only pass low frequency) to blur the image, like what we did in Part 1.2.
+            </li>
+            <li>
+                Then, we subtract the blurred image from the original image, which is the high frequency components of the image.
+            </li>
+            <li>
+                After that, we can share the original image by adding the high frequency components times alpha to the original image.<br>
+                <code>sharpened_image = original_image + alpha * high_frequency</code>
+            </li>
+        </ul>
+        
+        <h4> Results</h4>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/taj.jpg" alt="P2_original Image">
+                <div class="content-title">Original Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/taj_blur.jpg" alt="P2_blur Image">
+                <div class="content-title">Blurred Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/taj_sharpe.jpg" alt="P3_sharpened Image">
+                <div class="content-title">Sharpened Image</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/p2_1_landscape.jpg" alt="Original Image">
+                <div class="content-title">Original Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/landscape_blur.jpg" alt="P2_blur Image">
+                <div class="content-title">Blurred Image</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/landscape_sharpe.jpg" alt="P2_original Image">
+                <div class="content-title">Sharpened Image</div>
+            </div>
+
+        </div>
+        <div class = 'answer'>
+            However, if trying to sharpe a blurred image, it can not become the original image. Because part of the high frequency components are lost when the image is blurred.<br>
+            It only sharpens the edges of the blurred image, but the details of the image are still lost. See the images below.
+        </div>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/original_p2_1_landscape.jpg" alt="Original Image">
+                <div class="content-title">Original Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/blurred_image_p2_1_landscape.jpg" alt="P2_blur Image">
+                <div class="content-title">Blurred Image</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/blurredsharpe_image_p2_1_landscape.jpg" alt="P2_original Image">
+                <div class="content-title">Sharpened Image</div>
+            </div>
+        </div>
+
+
+
+        <h3> Part 2.2: Hybrid Images</h3>
+        <p> 
+            Hybrid images combining the low frequency components of one image with the high frequency components of another image. 
+            The image looks like the low frequency image, when we are far away, but when viewed up close, the image looks like the high frequency image.
+        </p>
+        <h4> Workflow</h4>
+        <ul>
+            <li> 
+                First, use the provided code align_image_code.py to align the two images. Trying to find the best alignment of the two images.
+            </li>
+            <li> 
+                Try to find the best high and low frequency cutoff(sigma) of the two images. Repeat the step until find appropriate sigmas.
+            </li>
+            <li> 
+                Using the Gaussian filter to blur the first image, and then subtract the blurred image from the original image to get the high frequency components of the first image.
+            </li>
+            <li>
+                Use the Gaussian filter to blur the second image, to get the low frequency components of the second image.
+            </li>
+
+            <li>
+                We combine the low frequency components of the first image with the high frequency components of the second image to get the hybrid image by the 
+            </li>
+        <ul>
+        <h4> Results</h4>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/DerekPicture.jpg" >
+                <div class="content-title">DerekPicture Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/nutmeg.jpg">
+                <div class="content-title">nutmeg Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/Part2_2_o.jpg" >
+                <div class="content-title">Hybrid Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/dog2.jpg">
+                <div class="content-title">Wolf Image_low</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/dog1.jpg" >
+                <div class="content-title">Dog Image_high</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/dog_r.jpg" >
+                <div class="content-title">Hybrid Image</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/dog_f.jpg" >
+                <div class="content-title">FFT Dog and Wolf Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/dog_fr.jpg">
+                <div class="content-title">FFT Combined Image</div>
+            </div>
+        </div>
+
+        <div class = 'answer'>
+            From FFT images, we can see how the frequency components of the two images changed after apply high and low pass filter, and how they
+            are combined. The low frequency components of the wolf image are combined with the high frequency components of the dog image. 
+            This two filtered images has a lot different frequency components, so the hybrid image looks like a wolf when we are far away, but looks like a dog when we are close.
+        </div>
+        
+        <div class = 'gallery'>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/cat1.jpg" >
+                <div class="content-title">Cat Image_high</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/cat2.jpg">
+                <div class="content-title">Bread Image_low</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/cat_r.jpg" >
+                <div class="content-title">Hybrid Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/lion.jpeg" >
+                <div class="content-title">Lion Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/lion1.jpeg" >
+                <div class="content-title">Cat Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/lionr.jpg" >
+                <div class="content-title"> Bad Hybrid Image</div>
+            </div>
+        </div>  
+        <h2>Multi-resolution Blending and the Oraple journey</h2> 
+        <h3> Overview:</h3>
+        <p> In this part, we are using Gaussian and Laplacian stacks to blend two images together. <br>
+            The Gaussian stack (<code>G = G.append(blur_im(im,filter))</code>) is a series of images that are blurred with different sigmas, 
+            and the Laplacian stack (<code>L = G[i] - G[i+1]</code>) is the images that are the difference between the blurred image and the image to blurring
+            To blend two images together, We blend the images together in each level of the two images Laplacian stack.
+        </p>
+
+        <h3> Part 2.3: Gaussian and Laplacian Stacks</h3>
+        <h4> Workflow</h4>
+        <ul>
+            <li> 
+                Create the Gaussian stack and Laplacian stack of the two images.
+            </li>
+            <li> 
+                Then blend the images together in each level of the two images Laplacian stack, save the result in the blended stack.
+            </li>
+            <li>
+                Finally, we add all of the images in the blended stack together to get the blended image.
+            </li>
+        </ul>
+        <h4> Results</h4>
+        <img src="../src/proj2_output/P23.jpeg" width= 95% height="480" alt="Original Image">
+
+
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/orange.jpeg" >
+                <div class="content-title">Orange Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/apple.jpeg">
+                <div class="content-title">Apple Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P2_result_0.jpg" >
+                <div class="content-title">Blended Image</div>
+            </div>
+        </div>
+
+        <h2> Part 2.4: Multiresolution Blending</h2>
+        <h3> Overview:</h3>
+        <p> Using the function from last part, we can easily blend two images together. Add all levels blend images together, we can get the final result. 
+            For the irregular mask, I used adrobe express to create a mask, 
+            and then convert it to a binary image. All images provied by adrobe express are resized to the same size.
+        </p>
+        <h4> Output</h4>
+        <div class = "gallery">
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/city1.jpg" >
+                <div class="content-title">Irregular Mask7</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/city2.jpg" >
+                <div class="content-title">Irregular Mask8</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/m1.jpg" >
+                <div class="content-title">Blended Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P23_result_0.jpg" >
+                <div class="content-title">Irregular Mask9</div>
+            </div>
+
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/sea-7364224_1280.jpg" >
+                <div class="content-title">Orange Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/ocean-7335499_1280.jpg">
+                <div class="content-title">Apple Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/m2.jpg" >
+                <div class="content-title">Blended Image</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P23_result_2.jpg" >
+                <div class="content-title">Blended Image</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/sky.jpeg" >
+                <div class="content-title">Irregular Mask</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/skyy.jpeg">
+                <div class="content-title">Irregular Mask2</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/m4.jpg">
+                <div class="content-title">Irregular Mask2</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P24sky.jpg" >
+                <div class="content-title">Irregular Mask3</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/eye2.jpeg" >
+                <div class="content-title">Irregular Mask4</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/eye1.jpeg" >
+                <div class="content-title">Irregular Mask5</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/m3.jpg" >
+                <div class="content-title">Irregular Mask6</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj2_output/P24_eye.jpg" >
+                <div class="content-title">Irregular Mask6</div>
+            </div>
+        </div>
+    </div>
+    <p> Asked ChateGPT to make the webpage look nice,save subplot, and text edit
+        https://chatgpt.com/share/66f1112c-db6c-8007-b156-05d7d1d9110c <br>
+        Img from https://pixabay.com, and Abrobe Express <br>
+
+    </p>
+</body>
+
+</html>
