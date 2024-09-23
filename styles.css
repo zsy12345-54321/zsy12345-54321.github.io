@@ -62,7 +62,12 @@ h2 {
     margin: 0;
     text-align: center;
 }
-
+h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 5px 0;
+    text-align: center;
+}
 .content-container {
     width: 85%;
     background-color: white;
@@ -79,11 +84,31 @@ h2 {
 }
 
 p {
-    margin: 10px 0;
+    margin: auto;
     line-height: 1.5;
     font-family: 'Times New Roman', Times, serif;
     font-size: 16px;
+    width: 80%;
+    
 }
+
+.answer {
+    font-weight: bold;
+    width: 75%;
+    margin: auto;
+    font-size: 15px;
+    line-height: 1.5;
+    font-family: 'Times New Roman', Times, serif;
+    color: #081b50;
+    display: block;
+    text-align: center;
+    background-color: aquamarine;
+    border-radius: 10%;
+}
+
+
+/* Gallery Section */
+
 .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
@@ -104,10 +129,12 @@ p {
 }
 
 .gallery-item img {
-    width: auto; 
+    width: calc(100% - 5px); 
     height: 250px; 
     object-fit: cover;
+    padding: auto;
     border-radius: 5px;
+    object-fit: contain;
     margin: 5px;
 }
 
