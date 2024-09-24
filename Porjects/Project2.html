@@ -15,10 +15,10 @@
         <h4> Workflow</h4>
         <ul>
             <li>First, we definded two array D_x ([1,-1]) and D_y ([1,-1].T), which are the finite difference operators in x and y direction. </li>
-            <li> Convolve the image by convolve2d function with these two arrays, to caculate the partial derivative in x and y direction.</li>
-            <li> After that, we use the formula: sqrt(dx^2 + dy^2) to caculate the gradient magnitude of the image.
+            <li>Convolve the image by convolve2d function with these two arrays, to caculate the partial derivative in x and y direction.</li>
+            <li>After that, we use the formula: sqrt(dx^2 + dy^2) to caculate the gradient magnitude of the image.
                 Gradient magnitude shows the change rate of the pixel value in x and y direction.</li>
-            <li> however, there is some noise in the image, so we need to choice an appropriate threshold, convert the result to binary image.</li>
+            <li>However, there is some noise in the image, so we need to choice an appropriate threshold, convert the result to binary image.</li>
             <li> After trying, I found that the threshold 95.5% of the gradient magnitude is a good choice to get a clear binary image. 
             </li>
         </ul>
@@ -155,19 +155,6 @@
                 <div class="content-title">Sharpened Image</div>
             </div>
 
-            <div class = "gallery-item">
-                <img src="../src/proj2_output/p2_1_landscape.jpg" alt="Original Image">
-                <div class="content-title">Original Image</div>
-            </div>
-            <div class = "gallery-item">
-                <img src="../src/proj2_output/landscape_blur.jpg" alt="P2_blur Image">
-                <div class="content-title">Blurred Image</div>
-            </div>
-
-            <div class = "gallery-item">
-                <img src="../src/proj2_output/landscape_sharpe.jpg" alt="P2_original Image">
-                <div class="content-title">Sharpened Image</div>
-            </div>
 
         </div>
         <div class = 'answer'>
