@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>180 Proj3</title>
+    <link rel="stylesheet" href="../styles.css"> 
+</head>
+<body>
+    <nav>
+        <a href="#Part1">Part 1. Defining Correspondences</a>
+        <a href="#Part2">Part 2. Computing the "Mid-way Face"</a>
+        <a href="#Part3">Part 3. The Morph Sequence</a>
+        <a href="#Part4">Part 4. The "Mean face" of a population</a>
+        <a href="#Part5">Part 5. Caricatures - Extrapolating from the mean</a>
+        <a href="#Part6">Part 6. Bells and Whistles</a>
+    </nav>
+ 
+    <header><h1>Project 3</h1>
+        <h2>Face Morphing</h2>
+        <h3> Siyuan Zhai</h3>
+    </header>
+
+    <div class = 'content-container'>
+        <h2> Overview</h2>
+        <p>In this project, we create a 'morph' (a warp of image shapes and a cross-dissolve) animation of one face transitioning into a different face. 
+            We compute the mean (extrapolated) face of a population of faces and use it to synthesize new faces. Additionally, we generate a video showing the morphing process from one image to another.
+            The dataset used in this project is the FEI Face dataset, which contains 400 images of faces. <a href="https://fei.edu.br/~cet/facedatabase.html">Link to the dataset</a>
+        </p>
+    
+        <section id = 'Part1'>
+            <h2> Part 1. Defining Correspondences</h2>
+            <h4> Workflow</h4>
+            <ul>
+                <li>We first define pairs of corresponding points on the two images by hand.
+                    <a href="https://cal-cs180.github.io/fa23/hw/proj3/tool.html">Here</a> is the Correspondence Tool.
+                </li>
+                <li> 
+                    Then, resize the image to the same size, and use the provided tool above to get the corresponding points of the two images, to calculate the average points of the two images. 
+                </li>
+                <li> 
+                    Finally, apply the fun function <code>compute_delaunay</code> to get the Delaunay triangulation of the average points.
+                </li>
+            </ul>
+            <h4>Outputs</h4>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/output_image.jpg">
+                    <div class="content-title"> Keypoints and triangulation</div>   
+                </div>
+            </div>
+        </section>
+
+        <section id = 'Part2'>
+            <h2>Part 2: Computing the "Mid-way Face"</h2>
+            <h4> Workflow</h4>
+            <ul>
+                <li>We first obtain the triangulation of the average points between the two images from part 1.</li>
+                <li>Next, I matched the average points with the corresponding points in img1 and img2 based on the triangulations.</li>
+                <li>We calculate the affine transformation matrix from one image to another using the function computeAffine(tri1_pts, tri2_pts). 
+                <li>Finally, we use polygons to mask all the pixels and apply each inverse matrix to the original image to get the final result.</li>
+                <li>Averaging the colors together(cross-dissolved)</li>
+                
+            </ul>
+            <p> Here is the original A and B images as well as the image of the mid-way face that you got.</p>
+    
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/resized.jpg">
+                    <div class="content-title">Original Image A</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/11a.jpg">
+                    <div class="content-title">Original Image B</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/midway.jpg" alt="P2_blur Image">
+                    <div class="content-title">Midway Face Image</div>
+                </div>
+            </div>
+        </section>
+
+       <section id = 'Part3'>
+        <h2>Part 3: The Morph Sequence</h2>
+        <p> 
+            In this section, I implemented the function `morphed_im = morph(im1, im2, im1_pts, im2_pts, tri, warp_frac, dissolve_frac)` which returns a morphed image for given warp and dissolve fractions. <br>
+            First, images `im1` and `im2` are warped to the average shape determined by `warp_frac`. Then, they are cross-dissolved based on the `dissolve_frac` to produce the final morphed image. <br>
+            A sequence of images is generated using a for loop that iterates through different values of `warp_frac` and `dissolve_frac`, appends each morphed image to a list, and saves the list as a GIF using the PIL library.
+        </p>
+        <h4>Outputs</h4>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/output.gif", style="width: 250px; height: auto;">
+                <div class="content-title"> Morph Sequence</div>   
+            </div>
+        </div>
+       </section>
+
+       <section id = 'Part4'>
+        <h2>Part 4. The "Mean face" of a population</h2>
+        <p> 
+            In this part, I am using face images in FEI Face dataset, and there are provided points for each image stored as pts file.<br>
+            I first read the images and points, and then calculate the average points of all the images to get the triangulation in order to warp each img to the avg img <br>
+            Then dissolve the images use for loop get the final result. I normalized the image to make sure the result is good.
+        </p>
+        <h4>Outputs</h4>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/102a.jpg">
+                <div class="content-title"> img_arr[2]</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/warped_img_arr[2].jpg">
+                <div class="content-title"> warped_img_arr[2]</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/106a.jpg">
+                <div class="content-title">img_arr[6]</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/warped_img_arr[6].jpg">
+                <div class="content-title"> warped_img_arr[6]</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/108a.jpg">
+                <div class="content-title"> img_arr[8]</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/warped_img_arr[8].jpg">
+                <div class="content-title"> warped_img_arr[8]</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/105a.jpg">
+                <div class="content-title"> img_arr[5]</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/warped_img_arr[5].jpg">
+                <div class="content-title"> warped_img_arr[5]</div>
+            </div>
+
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/avg_face.jpg">
+                <div class="content-title"> avg_face</div>  
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/avg_face_s.jpg">
+                <div class="content-title"> avg_face_smile</div>
+            </div>
+        </div>
+        <p> After get the average face, I aligned George's face to the mean face, 
+            to get face warped into the average geometry, the average face warped into the img geometry.
+         </p>
+
+         <div class="gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/selftoavg.jpg">
+                <div class="content-title"> George to average</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj3_output/avgtoself.jpg">
+                <div class="content-title"> average to George</div>
+            </div>
+        </gallery>
+
+
+         </section>
+
+         <section id = 'Part5'>
+            <h2>Part 5: Caricatures - Extrapolating from the mean</h2>
+            <p> This part is similar to the previous section. The average points are calculated using the formula: 
+                `points = mypoints + a * (avg_face_points - mypoints)`, where `a` can be less than 0 or greater than 1.
+            </p>
+            <h4>Outputs</h4>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/extrapolating_a15.jpg">
+                    <div class="content-title"> a = 1.5</div>   
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/extrapolating_a5.jpg">
+                    <div class="content-title"> a = -0.5</div>
+                </div>
+            </div>
+        </section>
+        <section id = 'Part6'>
+            <h2>Part 6: Bells and Whistles</h2>
+            <h3>Change gender of my face.</h3>
+            <p> I find a average face for chineseMale, and then warp my face to the average face.</p>
+            <h4>Outputs</h4>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/chineseaverageman.jpg">
+                    <div class="content-title"> chineseaverageman</div>   
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/self.jpg">
+                    <div class="content-title"> myimg</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/change_gender_55.jpg">
+                    <div class="content-title"> Output</div>
+                </div>
+            </div>
+
+            <h3>Morphing gif for different age</h3>
+            <p>I selected three of my photos from different ages and morphed them into a GIF. </p>
+            <div class="gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj3_output/output_combined.gif", style="height: 400px; width: 300px;">
+                    <div class="content-title"> age1</div>   
+                </div>
+            </div>
+        </section>
+        </div>
+    <div class="footer">
+        <p> Asked ChateGPT to make the webpage look nice,save subplot, and text edit
+            https://chatgpt.com/share/66f1112c-db6c-8007-b156-05d7d1d9110c</p>
+        
+    </div>
+</body>
+
+</html>
