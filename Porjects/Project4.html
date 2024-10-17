@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>180 Proj4</title>
+    <link rel="stylesheet" href="../styles.css"> 
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+<body>
+    <nav>
+        <a href="#Part1">Part A.IMAGE WARPING and MOSAICING</a>
+        <a href="#Part2">Part B.FEATURE MATCHING for AUTOSTITCHING</a>
+    </nav>
+ 
+    <header><h1>Project 4</h1>
+        <h2>[Auto]Stitching Photo Mosaics</h2>
+        <h3> Siyuan Zhai</h3>
+    </header>
+
+    <div class = 'content-container'>
+    
+        <section id = 'Part1'>
+            <h2> Part A. IMAGE WARPING and MOSAICING </h2>
+            <h3> Overview</h3>
+            <p>
+                For part A, I first take pictures at fixed points with different angles and use the provided tool to get the corresponding points of the images.
+                Then, I calculate the homography matrix using the function <code>computeH(im1_pts, im2_pts)</code> and warp the image using the function <code>warpImage(img, H)</code>.
+                Finally, I blend the images together to get the final result.
+            </p>
+            
+            <h3>Shoot and digitize pictures</h3>
+            <p>Take pictures at fixed points with different angles, and digitize the images.</p>
+            
+            <h3>Recover homographies</h3>
+            <p>
+                Use the provided tool to get the corresponding points of the images, then calculate the homography matrix using the function <code>computeH(im1_pts, im2_pts)</code>.
+                For each pair of corresponding points $(x, y)$ from image 1 and $(x', y')$ from image 2, we construct the following matrix equation to solve for the homography matrix:
+            </p>
+            <p>
+                $$\begin{bmatrix} 
+                wx' \\ 
+                wy' \\
+                w
+                \end{bmatrix} = H \cdot \begin{bmatrix} 
+                x \\ 
+                y \\ 
+                1 
+                \end{bmatrix}$$
+            </p>
+            <p>
+                $$\begin{bmatrix} wx' \\ wy' \\ w \end{bmatrix} = 
+                \begin{bmatrix} a & b & c \\ d & e & f \\ g & h & 1 \end{bmatrix} 
+                \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}$$
+            </p>
+            <p>
+                Simplifying gives:
+            </p>
+            <p>
+                $$ x' = \frac{ax + by + c}{gx + hy + 1}, \quad y' = \frac{dx + ey + f}{gx + hy + 1} $$
+            </p>
+            <p>
+                Rearranging, we get two linear equations:
+            </p>
+            <p>
+                $$ ax + by + c -gx \cdot x' - hy \cdot x' =  x' $$
+            </p>
+            <p>
+                $$ dx + ey + f - gx \cdot y' - hy \cdot y' =  y' $$
+            </p>
+            <p>
+                This results in the matrix form:
+            </p>
+            <p>
+                $$ \begin{bmatrix} 
+                x & y & 1 & 0 & 0 & 0 & -x \cdot x' & -y \cdot x' \\ 
+                0 & 0 & 0 & x & y & 1 & -x \cdot y' & -y \cdot y' 
+                \end{bmatrix} 
+                \cdot \begin{bmatrix} a \\ b \\ c \\ d \\ e \\ f \\ g \\ h \end{bmatrix} 
+                = \begin{bmatrix} x' \\ y' \end{bmatrix}$$
+            </p>
+            <p>
+                Then, apply least squares to solve for the homography matrix.
+            </p>
+            
+            <h3>Warp the image</h3>
+            <p>
+                To warp the image, use the function <code>warpImage(img, H)</code>. 
+                First, I calculate the shape of the output image using the four corners of the original image multiplied by the homography matrix $H$.
+                Normailize the calculated bounds, then create a 2D grid of coordinates for the output image and map it back to the input image using the inverse of $H$. 
+                The <code>griddata</code> function is used, it takes the input image coordinates, the pixel values from the input image (reshaped into a 1D array), and the back-projected coordinates xi. 
+                And returns the interpolated pixel values for the warped image, then reshape it back to the output image shape.
+            </p>
+            
+            <h4>Outputs</h4>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/im.jpg">
+                    <div class="content-title">original img</div>
+                </div>   
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/r2.jpg">
+                    <div class="content-title">warp img</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/im0.jpg">
+                    <div class="content-title">original img</div>
+                </div>
+                <div class= "gallery-item">
+                    <img src="../src/proj4_output/im00.jpg">
+                    <div class="content-title">warp img</div>
+                </div>
+            </div>
+             
+            <h3>Blend the images</h3>
+            <p> After the <code>warpImage</code> function works correctly, we can merge two images taken from the same position but at different angles into a single combined 
+                image. To blend the two images, the following steps are taken:</p> 
+            <h4>Workflow</h4>
+            <li> First, a blank image is created, large enough to fit both warped images. The size of this new image is calculated by considering the dimensions of both input images and the offset between them.</li>
+            <li> Next, I apply masks to each of the two images. These masks determine how much each image contributes to the final blended result. The mask values help smoothly combine the overlapping areas of the two images, ensuring that they blend seamlessly without harsh boundaries.</li>
+
+            <li> Using these masks, the two images are blended together pixel by pixel. Areas where the images overlap are averaged or weighted based on the mask, while areas with no overlap are filled directly from one of the images. This blending process results in a smooth and coherent final image.
+                <ul>
+                    <li> The first way I tried is creating a mask with values of either 1 or 0.5. This is a straightforward blending method where non-overlapping regions of the images are given full weight (mask value = 1), and overlapping regions are blended with half weight (mask value = 0.5).</li>
+                    <li> It not works well enough then I blend the images based on the distance of each pixel from the edge of the non-overlapping areas(Use function <code>cv.distanceTransform(mask1, cv.DIST_L2, 5)</code>), which give me a smoother transition between the images.</li>
+                </ul>
+            </li>
+
+            <h4>Outputs</h4>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/B11.jpg">
+                    <div class="content-title">Img 1</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/B22.jpg">
+                    <div class="content-title">Img 2</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/B33.jpg">
+                    <div class="content-title">blend img</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/F11.jpg">
+                    <div class="content-title">Img 1</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/F22.jpg">
+                    <div class="content-title">Img 2</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/F33.jpg">
+                    <div class="content-title">blend img</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/D11.jpg">
+                    <div class="content-title">Img 1</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/D22.jpg">
+                    <div class="content-title">Img 2</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/D33.jpg">
+                    <div class="content-title">blend img</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/E11.jpg">
+                    <div class="content-title">Img 1</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/E22.jpg">
+                    <div class="content-title">Img 2</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/E33.jpg">
+                    <div class="content-title">blend img</div>
+                </div>
+            </div>
+
+        </section>
+
+    
+    <div class="footer">
+        <p> Asked ChateGPT to generate some text in this page: https://chatgpt.com/share/671198a5-93ec-8007-9e1e-a4d8aec966ee
+           </p>
+        
+    </div>
+</body>
+
+</html>
