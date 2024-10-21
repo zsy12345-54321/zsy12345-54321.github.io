@@ -1,0 +1,55 @@
+# Initialize a set to keep track of updated voxels for this ray
+updated_voxels = set()
+
+# Get angle of this ray in fixed frame.
+angle = yaw + msg.angle_min + idx * msg.angle_increment
+
+# Throw out this point if it is too close or too far away.
+if r > msg.range_max:
+    rospy.logwarn("%s: Range %f > %f was too large.",
+                  self._name, r, msg.range_max)
+    continue
+if r < msg.range_min:
+    rospy.logwarn("%s: Range %f < %f was too small.",
+                  self._name, r, msg.range_min)
+    continue
+
+# Compute the end point of the laser scan in fixed frame
+x_end = sensor_x + r * np.cos(angle)
+y_end = sensor_y + r * np.sin(angle)
+
+# Compute differences and distance
+delta_x = x_end - sensor_x
+delta_y = y_end - sensor_y
+distance = np.sqrt(delta_x ** 2 + delta_y ** 2)
+
+# Define step size and number of steps
+step_size = min(self._x_res, self._y_res) / 2.0
+n_steps = int(np.ceil(distance / step_size))
+
+# Walk along this ray from the scan point to the sensor
+for i in range(n_steps + 1):
+    t = i / float(n_steps)
+    x = sensor_x + t * delta_x
+    y = sensor_y + t * delta_y
+
+    # Convert to grid indices
+    grid_x, grid_y = self.PointToVoxel(x, y)
+
+    # Check if indices are within bounds
+    if 0 <= grid_x < self._x_num and 0 <= grid_y < self._y_num:
+        # Only update each voxel once per ray
+        if (grid_x, grid_y) not in updated_voxels:
+            updated_voxels.add((grid_x, grid_y))
+            if i == n_steps:
+                # This is the scan point (occupied)
+                self._map[grid_x, grid_y] += self._occupied_update
+                # Threshold at occupied_threshold
+                if self._map[grid_x, grid_y] > self._occupied_threshold:
+                    self._map[grid_x, grid_y] = self._occupied_threshold
+            else:
+                # This is along the ray (free)
+                self._map[grid_x, grid_y] += self._free_update
+                # Threshold at free_threshold
+                if self._map[grid_x, grid_y] < self._free_threshold:
+                    self._map[grid_x, grid_y] = self._free_threshold
