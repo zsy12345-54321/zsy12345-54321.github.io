@@ -180,7 +180,198 @@
 
         </section>
 
-    
+
+            
+        <section id = 'Part2'>
+            <h2> Part B.FEATURE MATCHING for AUTOSTITCHING </h2>
+            <h3> Overview</h3>
+            <p>
+                For part B, we will implement a auto mathcing function to find the corresponding points of the images 
+                base on paper “Multi-Image Matching using Multi-Scale Oriented Patches” but with several simplifications
+                Then base on the homography matrix, we warp the image using the function <code>warpImage(img, H)</code>.
+                Finally, we will blend the images together to get the final result.
+            </p>
+            <h3> Harris Interest Point Detector </h3>
+            <p> The Harris Interest point detector is used to detect the interest points in the image. 
+                It basically caculate the gradient of the image and then caculate the matrix M for each pixel, base on the eigenvalues of M, we can determine if the pixel is a interest point.
+                I used the code provide by project website <a href="https://inst.eecs.berkeley.edu/~cs180/fa24/hw/proj4/harris.py">harris.py</a>.
+            </p>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/point1.jpg">
+                    <div class="content-title">Harris Interest Point with min_distance=5</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/point1_1.jpg">
+                    <div class="content-title">Harris Interest Point with min_distance=1</div>
+                </div>
+            </div>
+            <h3> Implement Adaptive Non-Maximal Suppression </h3>
+            <p> 
+                we already get the interest points, but there is so many points in the image, we need to reduce the number of points to make the matching process faster. 
+                One way to do this is to implement Adaptive Non-Maximal Suppression, which is a method to reduce the number of interest points by selecting only the most important ones.
+                base on the equaction form the paper, \( r_i = \min_j \left| x_i - x_j \right|, \text{ s.t. } f(x_i) < c_{\text{robust}} f(x_j), \ x_j \in \mathcal{I} \)
+                For every point \( x_i \) in the interest points, we caculate the distance to the nearest point \( x_j \) that has a higher score than \( x_i \), and find the min distance \( r_i \) for each point.
+                Then we sort the points by the value of r_i, and select the top \( N \) points as the final interest points.
+                I select crobust = 0.9 as described in the paper.
+            </p>
+            
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/point2.jpg">
+                    <div class="content-title">Harris Interest Point with Adaptive Non-Maximal Suppression, min_distance=5</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/point2_1.jpg">
+                    <div class="content-title">Harris Interest Point with Adaptive Non-Maximal Suppression, min_distance=1</div>
+                </div>
+            </div>
+
+            <h3> Implement Feature Descriptor extraction </h3>
+            <p> 
+                After we get the interest points, we need to extract the feature descriptor for each point. As the paper mentioned, 
+                we use the 40x40 window around the interest point as the feature descriptor, and then downsample the window to 8x8.
+            </p>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_0.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_1.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div> 
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_2.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_3.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_4.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_5.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_6.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj4_output/Feature_7.jpg">
+                    <div class="content-title">Feature Descriptor</div>
+                </div>
+            </div>
+        <h3>Implement Feature Matching</h3>
+        <p>
+            After we get the feature descriptor for each point, we need to match the points between two images. 
+            For each point in the first image, we caculate the distance to all the points in the second image, 
+            and select the point with the smallest distance as the corresponding point, use lowe ratio to filter the points. 
+            If the min and second min distance is too close, we will ignore this point.
+        </p>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/Matching_1.jpg">
+                <div class="content-title">Feature Matching</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/Matching_2.jpg">
+                <div class="content-title">Feature Matching</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/matching.jpg">
+                <div class="content-title">Feature Matching</div>
+            </div>
+        </div>
+        <p>
+            Although the feature matching works for most of the points, there are still some points that are not matched correctly.
+        </p>
+        <h3> 4-point RANSAC</h3>
+        <p> 
+            Once we have the matching points, we can use RANSAC to caculate the homography matrix.
+            Firstly, we randomly select 4 points from the matching points, and caculate the homography matrix.
+            Then we caculate the distance between the points in the second image and the points in the first image after warping.
+            If the distance is smaller than the threshold, we will add this point to the inliers.
+            Repeat this process for several times, and select the homography matrix with the most inliers. 
+            Then use this best homography matrix to caculate distance for all the points, and select the points with the distance smaller than the threshold as the inliers.
+            Finally, we caculate the homography matrix using the inliers.<br>
+            One thing to notice is that we need to normalize the points before caculating the homography matrix.
+            And I repeat the process for 1000 times, and select the homography matrix with the most inliers.
+            Base on the paper, I set the threshold to 0.5.
+        </p>
+
+        <h3> Blend the images</h3>
+        <p>
+            After we get the homography matrix, we can warp the image using the function <code>warpImage(img, H)</code>, 
+            and blend the images together to get the final result.
+        </p>
+        <h4>Outputs</h4>
+        <div class = "gallery">
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/B11.jpg">
+                <div class="content-title">Img 1</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/B22.jpg">
+                <div class="content-title">Img 2</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/B33.jpg">
+                <div class="content-title">blend img</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/F11.jpg">
+                <div class="content-title">Img 1</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/F22.jpg">
+                <div class="content-title">Img 2</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/F33.jpg">
+                <div class="content-title">blend img</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/F55.jpg">
+                <div class="content-title">Auto blend img</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/D11.jpg">
+                <div class="content-title">Img 1</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/D22.jpg">
+                <div class="content-title">Img 2</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/D33.jpg">
+                <div class="content-title">blend img</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/D55.jpg">
+                <div class="content-title">Auto blend img</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/E11.jpg">
+                <div class="content-title">Img 1</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/E22.jpg">
+                <div class="content-title">Img 2</div>
+            </div>
+            <div class = "gallery-item">
+                <img src="../src/proj4_output/E33.jpg">
+                <div class="content-title">blend img</div>
+            </div>
+        </div>
+
+        </div>
+    </section>
+       
     <div class="footer">
         <p> Asked ChateGPT to generate some text in this page: https://chatgpt.com/share/671198a5-93ec-8007-9e1e-a4d8aec966ee
            </p>
