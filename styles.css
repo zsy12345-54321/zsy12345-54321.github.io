@@ -144,6 +144,17 @@ p {
     object-fit: contain;
     margin: 5px;
 }
+.gallery-item img.resizable {
+    width: 100px; /* Small size by default */
+    height: 100px; /* Maintain aspect ratio */
+    transition: transform 0.3s ease-in-out; /* Smooth transition effect */
+}
+
+.resizable:hover {
+    transform: scale(3); /* Scale image to show original size */
+    z-index: 100; /* Bring image to the front */
+    position: relative; /* Ensure it appears above other elements */
+}
 
 .content-title, .content-note {
     width: 100%;
