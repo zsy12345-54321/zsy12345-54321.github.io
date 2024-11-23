@@ -10,6 +10,7 @@
 <body>
     <nav>
         <a href="#Part1">Part A: The Power of Diffusion Models!</a>
+        <a href="#Part2">Part B: Diffusion Models from Scratch!</a>
     </nav>
  
     <header><h1>Project 5</h1>
@@ -671,10 +672,136 @@
             <div class="content-title">a photo of a hipster barista & a lithograph of waterfalls</div>
         </div>
     </div>
-    </section>
+        </section>
+        <section id = "Part2">
+            <h2>Part 2: Training a Diffusion Model on MNIST</h2>
+            <p> In this part, we will train own diffusion model on MNIST
+            </p>
+            <h3>Part 1: Training a Single-Step Denoising UNet</h3>
+            <p>
+                In this part, we will first train a single-step denoising UNet on the MNIST dataset. 
+                The model will take a noisy image as input and output a denoised image, optimize over an L2 loss.
+                Follow by the Unet model below:
+            </p>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/unconditional_arch.png">
+                    <div class="content-title">Unet model</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/atomic_ops_new.png">
+                    <div class="content-title">Unet loss</div>
+                </div>
+            </div>
+            <p>
+                The different noise level for MNIST digits, training curve, and traning resulte are shown below.
+            </p>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/noise_levels.png",  width="500">
+                    <div class="content-title">Training curve</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/Training_loss_curve.png">
+                    <div class="content-title">Training curve</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/epoch1_ of_training.png">
+                    <div class="content-title">Training results</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/epoch5_of_training.png">
+                    <div class="content-title">Training results</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/test_different_noise.png">
+                    <div class="content-title">Out-of-Distribution Testing</div>
+                </div>
+            </div>
+            <h3>Part 2: Training a Diffusion Model on MNIST</h3>
+            <p> 
+                In this part, we will training a UNet model iteratively denoise an image, and implement the Denoising Diffusion Probabilistic Models
+                (DDPM) on the MNIST dataset.
+                <br> Start with the first change, we use the UNet to pridect teh added noise instead of teh clean img. 
+                Follow the loss function  here:       \[L = \mathbb{E}_{\epsilon,z} \|\epsilon_{\theta}(z) - \epsilon\|^2 \tag{B.3}\]
+                And generate noisy images for some timestep,  \[x_t = \sqrt{\bar\alpha_t} x_0 + \sqrt{1 - \bar\alpha_t} \epsilon
+                \quad \text{where}~ \epsilon \sim N(0, 1). \tag{B.4}\]
+                <br>
+                Also, add the time conditioning to the UNet model like this:
+            </p>
+                <div class = "gallery">
+                    <div class = "gallery-item">
+                        <img src="../src/proj5_output/projb/unconditional_arch.png">
+                        <div class="content-title">Conditional model</div>
+                    </div>
+                    <div class = "gallery-item">
+                        <img src="../src/proj5_output/projb/fc_long.png">
+                        <div class="content-title">FCBlock for conditioning</div>
+                    </div>
+                </div>
+                <p>
+                    Below are the algorithm for Sampling and training time conditioned UNet, training curve and the training results.
+                </p>
+                <div class = "gallery">
+                    <div class = "gallery-item">
+                        <img src="../src/proj5_output/projb/algo1_t_only.png">
+                        <div class="content-title">Algorithm B.1. Training time-conditioned UNet</div>
+                    </div>
+                    <div class = "gallery-item">
+                        <img src="../src/proj5_output/projb/curve_23.png">
+                        <div class="content-title">Time-Conditioned UNet training loss curve</div>
+                    </div>
+                    <div class = "gallery-item">
+                        <img src="../src/proj5_output/projb/epoch5.png">
+                        <div class="content-title">Epoch 5</div>
+                    </div>
+                    <div class = "gallery-item">
+                        <img src="../src/proj5_output/projb/epoch20.png">
+                        <div class="content-title">Epoch 20</div>
+                    </div>
+                </div>
+            <h3>2.4 Adding Class-Conditioning to UNet</h3>
+            <p>
+                In this part, we will add class-conditioning to the UNet model. 
+                The model will take a noisy image and a class label as input and output a denoised image.
+                The class label will be used to condition the model on the class of the digit in the image.
+                The loss function is defined as:
+                \[
+                L = \mathbb{E}_{\epsilon,z} \|\epsilon_{\theta}(x_t,t, c) - \epsilon\|^2 \tag{B.5}
+                \]
+                The algorithm for training the class-conditioned UNet and loss curve are shown below:
+            </p>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/algo3_c.png">
+                    <div class="content-title">Algorithm B.1. Training class-conditioned UNet</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/curve_24.png">
+                    <div class="content-title">Class-Conditioned UNet training loss curve</div>
+                </div>
+            </div>
+            </class>
+            <p>
+                The sampling process are Similar to part A, and we are using classifier-free guidance to guide the sampling process.\[\gamma = 5.0\]
+                The output images are shown below.
+            </p>
+            <div class = "gallery">
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/2405.png">
+                    <div class="content-title">Epoch 5</div>
+                </div>
+                <div class = "gallery-item">
+                    <img src="../src/proj5_output/projb/2420.png">
+                    <div class="content-title">Epoch 20</div>
+                </div>
+            </div>
+        </section>
+    
+
        
     <div class="footer">
-        <p> Asked ChateGPT to generate some text in this page: https://chatgpt.com/share/671198a5-93ec-8007-9e1e-a4d8aec966ee,<br> and https://chatgpt.com/share/671b40d0-c234-8007-80d6-b468d1853130.
+        <p> Asked ChateGPT to generate some text in this page: https://chatgpt.com/share/671198a5-93ec-8007-9e1e-a4d8aec966ee,<br> and https://chatgpt.com/share/671b40d0-c234-8007-80d6-b468d1853130.<br> and https://chatgpt.com/share/67425784-b03c-8007-85ba-ea6dc5ae7ff0
            </p>
     </div>
 </body>
