@@ -144,6 +144,12 @@ p {
     object-fit: contain;
     margin: 5px;
 }
+.gallery-item video {
+    width: calc(60% - 5px);
+    height: auto;
+    border: 2px solid #ccc; /* Optional: Add a border */
+    border-radius: 8px;     /* Optional: Rounded corners */
+}
 .gallery-item img.resizable {
     width: 100px; /* Small size by default */
     height: 100px; /* Maintain aspect ratio */

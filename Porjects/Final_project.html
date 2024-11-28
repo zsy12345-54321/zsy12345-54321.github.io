@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>180 Final_Project</title>
+    <link rel="stylesheet" href="../styles.css"> 
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+<body>
+    <nav>
+        <a href="#Part1">Part A: Augmented Reality</a>
+        <a href="#Part2">Part B: Diffusion Models from Scratch!</a>
+    </nav>
+ 
+    <header><h1>Final_Project</h1>
+        <h3> Siyuan Zhai</h3>
+    </header>
+
+    <div class = 'content-container'>
+    
+        <section id = 'Part1'>
+            <h2> Part A: Augmented Reality </h2>
+            <h3> Overview</h3>
+            <p>
+                In this project, I capture a video of a scene and use the camera calibration matrix to estimate the camera pose. 
+                Then, I use the camera pose to overlay a 3D model of a cube on the scene.
+            </p>
+
+            <h2>Setup</h2>
+            <p>
+                Capture a video that contains a box with regular patterns on it place in front of the camera.
+                Then use <code>cv2.VideoCapture</code> to read the video and <code>plt.ginput</code> to mark 20 points on the box.
+                The 20 points are used to estimate the camera pose.
+            </p>
+            <h2>Keypoints with known 3D world coordinates</h2>
+            <p>
+                We first marked 20 points on the box use <code>plt.ginput</code> and then set the 3D world coordinates of these points sicne we know the size of the box, and the patterns on the box are regular.
+                Due to some version conflicts, instead of using package <code>skvideo.io</code>, I use <code>cv2.VideoCapture</code> to read/write the video.
+            </p>
+            <h2>Propogating Keypoints to other Images in the Video</h2>
+            <p>
+                After that, we need to propogate the keypoints to other images in the video. I am using Off the Shelf Tracker <code>cv2.TrackerMedianFlow_create()</code> to track the keypoints.
+            </p>
+
+
+            <div class="gallery">
+                <div class="gallery-item">
+                    <video src="../src/proj6_output/tracked_video2.mp4" controls>
+                    </video>
+                </div>   
+            </div>
+            <h2>Estimating Camera Pose</h2>
+            <p>
+                After tracking the keypoints, we can use least squares to estimate the camera pose.
+                The camera projection matrix transforms the 3D world coordinates to 2D image coordinates.
+                And the equation is given by:
+                \[ s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} = K \begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix} \tag{1} \]
+                Simplify the equation, we get:
+                \[ s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} = \begin{bmatrix} r_{11} & r_{12} & r_{13} & t_1 \\ r_{21} & r_{22} & r_{23} & t_2 \\ r_{31} & r_{32} & r_{33} & t_3 \end{bmatrix} \begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix} \tag{2} \]
+                We can use the equation to estimate the camera pose.
+                To use the least squares method, rewrite the equation as:
+                \[ A \begin{bmatrix} r_{11} \\ r_{12} \\ r_{13} \\ r_{21} \\ r_{22} \\ r_{23} \\ r_{31} \\ r_{32} \\ r_{33} \\ t_1 \\ t_2 \\ t_3 \end{bmatrix} = b \tag{3} \]
+                Where A is a 2n x 12 matrix, and b is a 2n x 1 matrix.
+                So, A martix is: \[ 
+                A = \begin{bmatrix} 
+                X & Y & Z & 1 & 0 & 0 & 0 & 0 & -uX & -uY & -uZ & -u \\ 
+                0 & 0 & 0 & 0 & X & Y & Z & 1 & -vX & -vY & -vZ & -v 
+                \end{bmatrix} 
+                \]
+            </p>
+            <h2>Projecting a cube in the Scene</h2>
+            <p>
+                After estimating the camera pose, we can project a cube in the scene.
+                The cube is defined by 8 vertices, and the edges are defined by the vertices.
+                We can use the camera projection matrix to project the cube from 3D world coordinates to 2D image coordinates for each frame in the video.
+
+            </p>
+            <div class="gallery">
+                <div class="gallery-item">
+                    <video src="../src/proj6_output/finalvid.mp4" controls>
+                    </video>
+                </div>
+            </div>
+
+            <h2>Some improvements</h2>
+            <p>
+                The cube is not perfectly aligned with the box in the video. This is because the camera pose is not accurate enough.
+                I improved the accuracy by using more keypoints, and filitering out the keypoints that are not reliable by teh distance between the keypoints in two consecutive frames.
+                It looks better than beofre, but still not perfect.
+                We can improve the accuracy by using more keypoints, or using a better tracker.
+            </p>
+        </section>
+    
+
+       
+    <div class="footer">
+        <p> Asked ChateGPT to generate some text in this page, and draw a cube https://chatgpt.com/share/674807a7-d380-8007-a280-6a65c08f2f3b
+           </p>
+    </div>
+</body>
+
+</html>
