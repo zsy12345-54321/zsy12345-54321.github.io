@@ -9,8 +9,8 @@
 </head>
 <body>
     <nav>
-        <a href="#Part1">Part A: Augmented Reality</a>
-        <a href="#Part2">Part B: Diffusion Models from Scratch!</a>
+        <a href="#Part1">Project 1: Augmented Reality</a>
+        <a href="#Part2">Project 2: Lightfield Camera</a>
     </nav>
  
     <header><h1>Final_Project</h1>
@@ -20,7 +20,7 @@
     <div class = 'content-container'>
     
         <section id = 'Part1'>
-            <h2> Part A: Augmented Reality </h2>
+            <h2> Project 1: Augmented Reality </h2>
             <h3> Overview</h3>
             <p>
                 In this project, I capture a video of a scene and use the camera calibration matrix to estimate the camera pose. 
@@ -91,11 +91,102 @@
                 We can improve the accuracy by using more keypoints, or using a better tracker.
             </p>
         </section>
-    
+        <section id = "Part2">
+            <h2> Project 2: Lightfield Camera</h2>
+            <h3> 
+                Depth Refocusing and Aperture Adjustment with Light Field Data</h3>
+            <p>
+                According to the paper "Light Field Photography with a Hand-Held Plenoptic Camera" by Ren Ng, 
+                the light field data can be used to refocus the image and adjust the aperture through simple operations.
+                In this project, I use the light field data to refocus the image and adjust the aperture.
+            </p>
+            <h2>Setup</h2>
+            <p>
+                From the Standford Light Field Archive, I download the rectified light field data of the "Chess" and "Lego Knights" scene.
+                Base on the img name, I can get the position of actual physical camera coordinates.
+            </p>
+            <h2> Depth Refocusing:</h2>
+            <p>
+                First, I only average all the images in the same scene which shows a image that are far focus, since the shift of the object is small if the object is far away.
+                So in order to get different focus in different depth, we need to shift the image in the light field data.
+            </br>First, I selected a image as a center image, caculate the desired shift for x and y direction for each image in the light field data.
+                The desired shift is the different between the center image position and the image we want to shift and mutiply by a scale factor.
+                The larger the scale factor, the more the image will be shifted, the focus will be closer. and vice versa.
+            </br>Then, I use the shift matrix to shift all other images to the center image by using the shift matrix(<code>cv2.warpAffine</code>).
+                After that, I average all the images in the same scene to get the refocused image.
+            </p>
+            <div class = "gallery">
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/end_focus.jpg" alt="Depth Refocus Chess">
+                    <div class="content-title">Far Depth Refocus Chess</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/mid_focus.jpg" alt="Depth Refocus Chess">
+                    <div class="content-title">Mid Depth Refocus Chess</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/front_focus.jpg" alt="Depth Refocus Chess">
+                    <div class="content-title">Closer Depth Refocus Chess</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/output3.gif" alt="Depth Refocus Chess">
+                    <div class="content-title">gif for different focus</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/end_focus1.jpg" alt="Depth Refocus Lego">
+                    <div class="content-title">Far Depth Refocus Lego</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/mid_focus1.jpg" alt="Depth Refocus Lego">
+                    <div class="content-title">Mid Depth Refocus Lego</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/front_focus1.jpg" alt="Depth Refocus Lego">
+                    <div class="content-title">Closer Depth Refocus Lego</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/output31.gif" alt="Depth Refocus Lego">
+                    <div class="content-title">gif for different focus</div>
+                </div>
+            </div>
+            <h2> Aperture Adjustment:</h2>
+            <p>
+                The aperture adjustment is similar to the depth refocusing. The only difference is that for different aperture, we will use different amount of images to average.
+                The larger the aperture, the more images we will use to average, and the more blur the image will be.
+                To increase the DoF, we need to limit the number of images we use to average, and the shift of the image should be small.
+                In other words, base on different aperture, I filiter out the images that are not in the range of the aperture, and then average the rest images.  
+            </p> 
+            <p>
+                Output for different aperture:
+            </p>
+            <div class="gallery">
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/img1.jpg" alt="Depth Refocus Chess">
+                    <div class="content-title">Aperture 1 Chess</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/img4.jpg" alt="Depth Refocus Chess">
+                    <div class="content-title">Aperture 4 Chess</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/img15.jpg" alt="Depth Refocus Chess">
+                    <div class="content-title">Aperture 15 Chess</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/part2_output.gif" alt="Depth Refocus Lego">
+                    <div class="content-title">gif for different aperture</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="../src/proj6_output/part2_output11.gif" alt="Depth Refocus Lego">
+                    <div class="content-title">gif for different aperture</div>
+                </div>
+            </div>
+
+        </section>
 
        
     <div class="footer">
-        <p> Asked ChateGPT to generate some text in this page, and draw a cube https://chatgpt.com/share/674807a7-d380-8007-a280-6a65c08f2f3b
+        <p> Asked ChateGPT to generate some text in this page, and draw a cube https://chatgpt.com/share/674807a7-d380-8007-a280-6a65c08f2f3b, https://chatgpt.com/share/674d28e9-ab30-8007-8159-938868f78dad
            </p>
     </div>
 </body>
