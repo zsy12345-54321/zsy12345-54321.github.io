@@ -181,45 +181,98 @@ p {
 
 /* Portfolio Section */
 .portfolio-item {
-    width: 31%;
-    margin: 1%;
-    float: left;
+
     background-color: rgb(201, 211, 233);
-    box-shadow: inset 0px 0px 5px 0px #aaa;
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 10px; /* Increased radius for a smoother look */
     box-shadow: 0px 0px 5px 0px #aaa;
+    padding: -5px;
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth hover transitions */
+    display: flex; /* Use flexbox for inner content */
+    flex-direction: column; /* Stack children vertically */
+    height: 100%; /* Ensure items are the same height */
+    position: relative;
+    overflow: hidden;
+}
+
+.portfolio-item:hover {
+    transform: translateY(-25px) scale(1.25); /* Slightly lift the item on hover */
+    box-shadow: 0px 8px 16px rgba(102, 96, 96, 0.2); /* Enhanced shadow on hover */
+    z-index: 1; /* Ensure the item appears above other elements */
+}
+
+.portfolio-item:hover::after {
+    opacity: 0.5;
+}
+
+.portfolio-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 123, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
 .portfolio-item img {
-    width: 250px;
-    height: 250px;
-    border-radius: 25px;
+    width: 100%;
+    height: auto;
+    border-radius: 25px; /* Rounded corners for images */
     display: block;
-    margin: auto;
+    object-fit: cover;
 }
 
+/* Portfolio Item Heading */
 .portfolio-item h2 {
     color: #007bff;
-    font-size: 24px;
-    margin-top: 10px;
+    font-size: 1.5em; /* Relative sizing for responsiveness */
+    margin: 15px;
+    text-align: center; /* Center the heading */
 }
 
+/* Portfolio Item Paragraph */
 .portfolio-item p {
     color: #666;
-    font-size: 14px;
-    margin: 10px 0;
-    line-height: 1.5;
+    font-size: 1em; /* Relative sizing for responsiveness */
+    margin: 0 15px 15px;
+    text-align: center; /* Center the text */
+    flex-grow: 1; /* Allow paragraph to take up remaining space */
 }
 
+
 /* Clearfix for Portfolio Section */
-.portfolio-container::after {
-    content: "";
-    display: table;
-    clear: both;
+.portfolio-container {
+    display: grid; /* Change from default layout to grid */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
+    gap: 20px; /* Space between items */
+    padding: 20px; /* Ensure there's padding around the grid */
+    max-width: 1200px; /* Optional: Limit the maximum width */
+    margin: 0 auto; /* Center the container */
 }
 @media print {
     img {
         page-break-inside: avoid;
+    }
+}
+@media (max-width: 600px) {
+    .portfolio-container {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .portfolio-item {
+        padding: 8px;
+    }
+
+    .portfolio-item h2 {
+        font-size: 1.2em;
+        margin: 10px;
+    }
+
+    .portfolio-item p {
+        font-size: 0.9em;
+        margin: 0 10px 10px;
     }
 }
