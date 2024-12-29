@@ -242,7 +242,7 @@ nav a:hover {
 }
 
 .portfolio-item {
-    background-color: rgb(216, 224, 240);
+    background-color: rgb(201, 211, 233);
     border-radius: 10px;
     box-shadow: 0px 0px 5px 0px #aaa;
     padding: 10px;
@@ -251,7 +251,6 @@ nav a:hover {
     flex-direction: column;
     height: 100%;
     position: relative;
-    opacity: 0.95;
 }
 
 .portfolio-item:hover {
@@ -292,10 +291,11 @@ nav a:hover {
 
 /* --- Footer Styling --- */
 footer {
-    color: #080000;
+    background-color: #ffffff;
+    color: #070000;
     text-align: center;
     padding: 20px 10px;
-    border-radius: 2%;
+    opacity: 0.8;
 }
 
 .footer-links {
@@ -303,7 +303,7 @@ footer {
 }
 
 .footer-links a {
-    color: #050000;
+    color: #0f0000;
     margin: 0 10px;
     text-decoration: none;
     transition: color 0.3s ease;
@@ -343,247 +343,5 @@ footer {
 
     .portfolio-item p {
         font-size: 0.9em;
-    }
-}
-
-/* Header */
-header {
-    text-align: center;
-    padding: 50px 20px;
-    color: #333;
-    margin-top: 50px;
-}
-
-header h1 {
-    font-size: 46px;
-    font-weight: bold;
-    margin: 5px 0;
-    color: #333;}
-
-header h2 {
-    font-size: 25px;
-    font-weight: lighter;
-    margin: 5px 0;
-    font-style: italic;
-    color: #555;
-}
-
-header h3 {
-    font-size: 20px;
-    margin-top: 5px;
-    color: #666;
-}
-
-h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-    text-align: center;
-}
-h3 {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 5px 0;
-    text-align: center;
-}
-.content-container {
-    width: 85%;
-    background-color: white;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin: 20px auto;
-    display: center;
-    flex-direction: column;
-    align-items: center;
-    font-family:'Times New Roman', Times, serif;
-    font-size: medium;
-    opacity: 0.7;
-    border-radius: 5%;
-}
-
-p {
-    margin: auto;
-    line-height: 1.5;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 16px;
-    width: 80%;
-    
-}
-
-.answer {
-    font-weight: bold;
-    width: 75%;
-    margin: auto;
-    font-size: 15px;
-    line-height: 1.5;
-    font-family: 'Times New Roman', Times, serif;
-    color: #081b50;
-    display: block;
-    text-align: center;
-    background-color: aquamarine;
-    border-radius: 10%;
-}
-
-
-/* Gallery Section */
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 20px; /* Space between items */
-    width: 95%;
-    margin: 10px auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 5%;
-}
-
-.gallery-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: 'Times New Roman', Times, serif;
-}
-
-.gallery-item img {
-    width: calc(100% - 5px); 
-    height: 250px; 
-    object-fit: cover;
-    padding: auto;
-    border-radius: 5px;
-    object-fit: contain;
-    margin: 5px;
-}
-.gallery-item video {
-    width: calc(60% - 5px);
-    height: auto;
-    border: 2px solid #ccc; /* Optional: Add a border */
-    border-radius: 8px;     /* Optional: Rounded corners */
-}
-.gallery-item img.resizable {
-    width: 100px; /* Small size by default */
-    height: 100px; /* Maintain aspect ratio */
-    transition: transform 0.3s ease-in-out; /* Smooth transition effect */
-}
-
-.resizable:hover {
-    transform: scale(3); /* Scale image to show original size */
-    z-index: 100; /* Bring image to the front */
-    position: relative; /* Ensure it appears above other elements */
-}
-
-.content-title, .content-note {
-    width: 100%;
-    text-align: center;
-    margin-top: 5px;
-}
-
-.content-title {
-    font-size: larger;
-    font-weight: bold;
-}
-
-.content-note {
-    font-style: italic;
-    font-weight: bold;
-    opacity: 0.8;
-}
-
-/* Portfolio Section */
-.portfolio-item {
-    background-color: rgba(227, 245, 231, 0.7);
-    border-radius: 10px; /* Increased radius for a smoother look */
-    box-shadow: 0px 0px 5px 0px #aaa;
-    padding: -5px;
-    transition: transform 0.3s, box-shadow 0.3s; /* Smooth hover transitions */
-    display: flex; /* Use flexbox for inner content */
-    flex-direction: column; /* Stack children vertically */
-    height: auto; /* Ensure items are the same height */
-    position: relative;
-    overflow: hidden;
-}
-
-.portfolio-item:hover {
-    transform: translateY(-25px) scale(1.25); /* Slightly lift the item on hover */
-    box-shadow: 0px 8px 16px rgba(102, 96, 96, 0.2); /* Enhanced shadow on hover */
-    z-index: 1; /* Ensure the item appears above other elements */
-}
-
-.portfolio-item:hover::after {
-    opacity: 0.5;
-}
-
-.portfolio-item::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 123, 255, 0.1);
-    opacity: 0.5;
-    transition: opacity 0.3s;
-}
-
-.portfolio-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 25px; /* Rounded corners for images */
-    display: block;
-    object-fit: cover;
-}
-
-/* Portfolio Item Heading */
-.portfolio-item h2 {
-    color: #071400;
-    font-size: 1.75em; /* Relative sizing for responsiveness */
-    margin: 15px;
-    text-align: center; /* Center the heading */
-}
-
-/* Portfolio Item Paragraph */
-.portfolio-item p {
-    color: #050000;
-    font-size: 1.1em; /* Relative sizing for responsiveness */
-    margin: 0 15px 15px;
-    text-align: center; /* Center the text */
-    flex-grow: 1; /* Allow paragraph to take up remaining space */
-}
-
-/* Clearfix for Portfolio Section */
-.portfolio-container {
-    display: grid; /* Change from default layout to grid */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
-    gap: 20px; /* Space between items */
-    padding: 20px; /* Ensure there's padding around the grid */
-    max-width: 1200px; /* Optional: Limit the maximum width */
-    margin: 0 auto; /* Center the container */
-}
-@media print {
-    img {
-        page-break-inside: avoid;
-    }
-}
-
-@media (max-width: 600px) {
-    .portfolio-container {
-        padding: 10px;
-        gap: 15px;
-    }
-
-    .portfolio-item {
-        padding: 8px;
-        gap: 10px;
-    }
-
-    .portfolio-item h2 {
-        font-size: 1.2em;
-        margin: 10px;
-    }
-
-    .portfolio-item p {
-        font-size: 0.9em;
-        margin: 0 10px 10px;
     }
 }
