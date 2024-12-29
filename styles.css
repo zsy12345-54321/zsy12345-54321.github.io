@@ -388,7 +388,7 @@ h3 {
 }
 .content-container {
     width: 85%;
-    background-color: white;
+    background-color: rgb(235, 252, 242);
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     margin: 20px auto;
@@ -397,7 +397,7 @@ h3 {
     align-items: center;
     font-family:'Times New Roman', Times, serif;
     font-size: medium;
-    opacity: 0.7;
+    opacity: 0.95;
     border-radius: 5%;
 }
 
@@ -492,7 +492,7 @@ p {
 
 /* Portfolio Section */
 .portfolio-item {
-    background-color: rgba(227, 245, 231, 0.7);
+    background-color: rgba(227, 245, 231, 0.8);
     border-radius: 10px; /* Increased radius for a smoother look */
     box-shadow: 0px 0px 5px 0px #aaa;
     padding: -5px;
